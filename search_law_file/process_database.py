@@ -5,7 +5,7 @@ from functools import wraps
 
 import MySQLdb
 
-from search_law.search_law_file import crawler_laws
+import crawler_laws
 
 conn = MySQLdb.connect(host='127.0.0.1', user='root', passwd='wt322426', db='law_database')
 
