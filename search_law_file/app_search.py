@@ -15,7 +15,7 @@ def json_api():
         #  pattern = re.compile(r'【.+】')  也可以匹配法律的标题
         words = request.args['info']
         law_lst = search_engine.search(words)
-        content = map(lambda x: {str(random.randint(1, 100)): [unicode(x[:50]+'....', errors='ignore'),
+        content = map(lambda x: {str(random.randint(100, 999)): [unicode(x[:50]+'....', errors='ignore'),
                                                                unicode(x, errors='ignore')]}, law_lst)  # 将str转换为unicode，这样不会出现编码问题
         '''Test
         for i in content:
