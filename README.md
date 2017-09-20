@@ -1,11 +1,11 @@
 # Search_law
 The project major provide a searching api of laws. Users can input a searching url and the sever return a result about laws.
 # Use-method
-** input:**
+__input:__
 ```
 http://127.0.0.1:5000/search/api?info=拐卖妇女
 ```
-** output**
+__output__
 ```
 {
   "task": [
