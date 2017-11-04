@@ -1,79 +1,81 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from functools import wraps
-
 import MySQLdb
 
-import crawler_laws
-
-conn = MySQLdb.connect(host='127.0.0.1', user='root', passwd='wt322426', db='law_database')
-
-cur = conn.cursor()
-
-'''resolve UnicodeEncodeError: 'latin-1' codec can't encode character'''
-conn.set_character_set('utf8')
-cur.execute('SET NAMES utf8;')
-cur.execute('SET CHARACTER SET utf8;')
-cur.execute('SET character_set_connection=utf8;')
-'''end'''
+from crawler_laws import MyCrawler
 
 
-def try_except(func):
-    @wraps(func)
-    def inner(*args):
-        try:
-            return func(*args)
-        except Exception, e:
-            print 'Error: ' + e
-            conn.rollback()
-        finally:
-            cur.close()
-            conn.close()
-    return inner
+# mysql配置类
+class SettingDB(object):
+
+    def __init__(self):
+        self._config = dict(host='127.0.0.1', user='root', passwd='wt322426', db='law_database')
+
+    # 为处理mysql的方法提供配置和异常处理的装饰器
+    def __call__(self, func):
+        def process_inner(other_obj, *args, **kwargs):
+            try:
+                other_obj._conn = MySQLdb.connect(**self._config)
+                other_obj._cur = other_obj._conn.cursor()
+                '''resolve UnicodeEncodeError: 'latin-1' codec can't encode character'''
+                other_obj._conn.set_character_set('utf8')
+                other_obj._cur.execute('SET NAMES utf8;')
+                other_obj._cur.execute('SET CHARACTER SET utf8;')
+                other_obj._cur.execute('SET character_set_connection=utf8;')
+                '''end'''
+                return func(other_obj, *args, **kwargs)
+            except Exception, e:
+                print 'Error: ' + e
+                other_obj._conn.rollback()
+            finally:
+                other_obj._cur.close()
+                other_obj._conn.close()
+
+        return process_inner
 
 
-@try_except
-def save_in_db():
-    # 获取法律列表
-    lst = crawler_laws.main()
-    for law in lst:
-        num = law[0]
-        cont = ';'.join(law[1:])
-        sql = 'insert into criminal (number,content) values (%s,%s)'
-        params = (num, cont)
-        cur.execute(sql, params)
-    conn.commit()
-    return
+# mysql处理类
+class ProcessDB(object):
 
+    def __init__(self):
+        pass
 
-@try_except
-def get_content_db():
-    sql = 'select content from criminal'
-    cur.execute(sql)
-    tuple_lst = cur.fetchall()
-    # format tuple
-    data_lst = map(lambda x: x[0], tuple_lst)
-    return data_lst
+    # 从相关法律查询网站提取信息存入db
+    @SettingDB()
+    def save_in_db(self):
+        lst = MyCrawler().run()  # 获取法律列表
+        for law in lst:
+            num = law[0]
+            cont = ';'.join(law[1:])
+            sql = 'insert into criminal (number,content) values (%s,%s)'
+            params = (num, cont)
+            self._cur.execute(sql, params)
+        self._conn.commit()
+        return
 
+    # 查询所有content
+    @SettingDB()
+    def get_content_all(self):
+        sql = 'select content from criminal'
+        self._cur.execute(sql)
+        tuple_lst = self._cur.fetchall()
+        data_lst = map(lambda x: x[0], tuple_lst)  # format tuple
+        return data_lst
 
-'''
-获取db中的number
-@try_except
-def get_number_db(content):
-    sql = 'select number from criminal where content=%s'
-    params = content
-    cur.execute(sql, params)
-    data = cur.fetchone()
-    return data
+    # 查询指定content的number
+    @SettingDB()
+    def get_number_db(self, content):
+        sql = 'select number from criminal where content=%s'
+        self._cur.execute(sql, params=(content,))
+        data = self._cur.fetchone()[0]
+        return data
 
-@try_except
-def get_info(id):
-    sql = 'select * from criminal where id = %s'
-    params = id
-    cur.execute(sql, params)
-    data = cur.fetchone()
-    return data
-'''
-
+    # 查询指定id的所有列
+    @SettingDB()
+    def get_info(self, _id):
+        sql = 'select * from criminal where id = %s'
+        self._cur.execute(sql, params=(_id,))
+        data = self._cur.fetchone()[0]
+        return data
 

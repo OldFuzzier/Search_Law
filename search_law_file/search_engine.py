@@ -2,35 +2,30 @@
 # -*- coding: utf-8 -*-
 import jieba
 
-import process_database as db
+from process_database import ProcessDB
 
-'''解决编码问题'''
+'''解决环境编码问题'''
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 '''end'''
 
-data_lst = db.get_content_db()  # 获取全部content
 
+class MySearch(object):
 
-def search(words):
-    global data_lst
-    format_words = filter(lambda x: len(x) > 1, jieba.lcut(words))  # 对输入的字符串进行分词、筛选
-    total_lst = []
-    for word in format_words:
-        total_lst.extend(filter(lambda x: x.find(word) != -1, data_lst))
-    total_set = set(total_lst)  # 去重
-    return total_set
+    def __init__(self):
+        self.data_lst = ProcessDB().get_content_db()  # 获取全部content
 
-'''
-if __name__ == '__main__':
-    temp = ['嫌疑人在知道犯错情况下再次犯错', '如果强奸未成年少女判死刑,嫌疑人和共犯一样', '杀人犯也是迫不得已']
-    inp = raw_input('Please input:\n')
-    while inp != 'exit':
-        inp = raw_input('Please input:\n')
-        lst = search(inp)
-        for i in lst:
-            print i
-            print
-        print 'total lines: ' + str(len(lst))
-'''
+    # search方法主要执行逻辑是
+    # 1 对输入字符串进行拆分成每一个词
+    # 2 提取所有法律条款
+    # 3 找出所有在词在的法律
+    # 4 去重
+    # 5 返回搜索结果
+    def search(self, words):
+        format_words = filter(lambda x: len(x) > 1, jieba.lcut(words))  # 对输入的字符串进行分词、筛选
+        total_lst = []
+        for word in format_words:
+            total_lst.extend(filter(lambda x: x.find(word) != -1, self.data_lst))
+        total_set = set(total_lst)  # 去重
+        return total_set
