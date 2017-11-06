@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
+    <div><h3 class="text-center"><strong>{{ name }}</strong></h3></div>
+    {% for number, content in o_law_list %}
+    <ul>
+        <li>{{ loop.index }}. {{ number }}: {{ content }}</li><br />
+    </ul>
+    {% endfor %}
+{% endblock %}

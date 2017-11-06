@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block nav %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
+    <br /> <br /> <br /> <br />
+    <div><h3 class="text-center"><strong>{{ name }}</strong></h3></div>
+    <form class="form-horizontal" method="'GET" action="/search">
+    <div class="form-group">
+        <label class="col-md-2 control-label">搜索内容</label>
+        <div class="col-md-8">
+            <input type="text" class="form-control" placeholder="请输入关键词" name="query">
+        </div>
+        <div class="col-md-2">
+            <input type="submit" class="control-label" value="搜索">
+        </div>
+    </div>
+    </form>
+{% endblock %}

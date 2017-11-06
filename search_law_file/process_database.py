@@ -63,9 +63,16 @@ class ProcessDB(object):
         data_lst = map(lambda x: x[0], tuple_lst)  # format tuple
         return data_lst
 
+    @SettingDB()
+    def get_number_content_all(self):
+        sql = 'select number, content from criminal'
+        self._cur.execute(sql)
+        data_list = self._cur.fetchall()
+        return data_list
+
     # 查询指定content的number
     @SettingDB()
-    def get_number_db(self, content):
+    def get_number_by_content(self, content):
         sql = 'select number from criminal where content=%s'
         self._cur.execute(sql, params=(content,))
         data = self._cur.fetchone()[0]
@@ -73,7 +80,7 @@ class ProcessDB(object):
 
     # 查询指定id的所有列
     @SettingDB()
-    def get_info(self, _id):
+    def get_info_by_id(self, _id):
         sql = 'select * from criminal where id = %s'
         self._cur.execute(sql, params=(_id,))
         data = self._cur.fetchone()[0]

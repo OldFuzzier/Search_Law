@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block head %}
+	<meta charset="UTF-8">
+	<title>law_search</title>
+	<!-- 适配移动端 -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="{{ url_for('static', filename='jquery-3.1.1.min.js') }}"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+	{% endblock %}
+</head>
+<body>
+<div class="container">
+
+	{% block nav %}
+	<ul class="nav nav-tabs">
+		<li class="" role="presentation"><a href="/">主页</a></li>
+	</ul>
+	{% endblock %}
+
+	<div id="content">
+	{% block content %}{% endblock %}
+	</div>
+</div>
+</body>
+</html>
