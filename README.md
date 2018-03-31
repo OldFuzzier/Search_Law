@@ -2,11 +2,11 @@
 The project major provide a searching api of laws. Users can input a searching url and the sever return a result about laws.
 # Function
 ## 1 requestAPI
-###__input:__
+### __input:__
 ```
 http://127.0.0.1:5000/search/api?info=拐卖妇女
 ```
-###__output__
+### __output__
 ```
 {
   "task": [
@@ -32,7 +32,8 @@ http://127.0.0.1:5000/search/api?info=拐卖妇女
 	....
 }
 ```
-##2SearchUI
-![RSS icon](http://images2017.cnblogs.com/blog/1035163/201711/1035163-20171106155721278-261585606.png)
+## 2 SearchUI
 
-![RSS icon](http://images2017.cnblogs.com/blog/1035163/201711/1035163-20171106155804481-338919399.png)
+<img src="/search_law_file/static/search_page.jpg" width="80%" height="28%" />
+
+<img src="/search_law_file/static/law_page.png" width="80%" height="28%" />

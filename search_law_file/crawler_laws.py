@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 class MyCrawler(object):
 
     def __init__(self):
+        super(MyCrawler, self).__init__()
         self.url_criminal = 'http://www.lawtime.cn/faguizt/23.html'
 
     def get_html(self):

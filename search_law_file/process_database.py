@@ -1,16 +1,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
 import MySQLdb
 
 from crawler_laws import MyCrawler
+
+MYSQL_U_P = os.environ.get('MYSQL_USER')
+U_P_list = MYSQL_U_P.split(':')
+U = U_P_list[0]
+P = U_P_list[1]
 
 
 # mysql配置类
 class SettingDB(object):
 
     def __init__(self):
-        self._config = dict(host='127.0.0.1', user='root', passwd='wt322426', db='law_database')
+        self._config = dict(host='127.0.0.1', user=U, passwd=P, db='law_database')
 
     # 为处理mysql的方法提供配置和异常处理的装饰器
     def __call__(self, func):
@@ -26,7 +32,7 @@ class SettingDB(object):
                 '''end'''
                 return func(other_obj, *args, **kwargs)
             except Exception, e:
-                print 'Error: ' + e
+                print 'Error: ' + str(e)
                 other_obj._conn.rollback()
             finally:
                 other_obj._cur.close()
@@ -36,15 +42,16 @@ class SettingDB(object):
 
 
 # mysql处理类
-class ProcessDB(object):
+class ProcessDB(MyCrawler):
+    # 继承爬虫类
 
     def __init__(self):
-        pass
+        super(ProcessDB, self).__init__()
 
     # 从相关法律查询网站提取信息存入db
     @SettingDB()
     def save_in_db(self):
-        lst = MyCrawler().run()  # 获取法律列表
+        lst = self.run()  # 获取法律列表
         for law in lst:
             num = law[0]
             cont = ';'.join(law[1:])
